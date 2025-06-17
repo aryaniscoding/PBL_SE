@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32-CAM Plate Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar 1: About Us -->
+        <div class="sidebar" id="sidebar-about">
+            <h2>About Us</h2>
+            <p>We are a team dedicated to providing innovative solutions for vehicle monitoring and management.</p>
+        </div>
+
+        <!-- Main Content: Live Camera Feed -->
+        <div class="main-content">
+            <h1>ESP32-CAM Live Stream</h1>
+            <img id="videoFeed" src="{{ url_for('video_feed') }}" width="640px">
+            <br>
+            <button onclick="captureImage()">Capture Image</button>
+            <br>
+
+            <h2>Captured Image</h2>
+            <img id="capturedImage" src="" width="640px">
+            
+            <h2>Extracted Number Plate</h2>
+            <p id="extractedText">Waiting...</p>
+
+            <h2>Calculated Fare</h2>
+            <p id="fareText">Waiting...</p>
+
+            <h2>Captured Data</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Number Plate</th>
+                        <th>Fare</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable"></tbody>
+            </table>
+        </div>
+
+        <!-- Sidebar 2: About the Website -->
+        <div class="sidebar" id="sidebar-website">
+            <h2>About the Website</h2>
+            <p>This website provides real-time license plate recognition and fare calculation using ESP32-CAM and Flask.</p>
+        </div>
+    </div>
+
+    <script>
+        function captureImage() {
+            fetch('/capture', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('capturedImage').src = data.image;
+                document.getElementById('extractedText').textContent = data.plate;
+                document.getElementById('fareText').textContent = `Fare: ${data.fare.toFixed(2)} units`;
+                loadCapturedData();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function loadCapturedData() {
+            fetch('/get_data')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById('dataTable');
+                tableBody.innerHTML = '';
+                data.forEach(entry => {
+                    let row = `<tr>
+                        <td>${entry[2]}</td>
+                        <td>${entry[1]}</td>
+                        <td>${entry[3].toFixed(2)} units</td>
+                        <td><img src="${entry[0]}" width="150px"></td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error('Error loading data:', error));
+        }
+
+        window.onload = loadCapturedData;
+    </script>
+</body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | FareFlow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00aaff;
+            --primary-dark: #0077aa;
+            --secondary: #00ffaa;
+            --danger: #ff5555;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url("{{ url_for('static', filename='images/new_wallpaper.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            background: rgba(0, 170, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a i {
+            font-size: 1rem;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-icon:hover {
+            transform: rotate(90deg);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .section {
+            margin: 2.5rem 0;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Video Feed */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+
+        #videoFeed {
+            width: 100%;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        /* Results Display */
+        .result-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .result-card {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .result-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .result-card p {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        #capturedImage {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #capturedImage:hover {
+            transform: scale(1.02);
+        }
+
+        /* Status Indicators */
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+        }
+
+        .status-waiting {
+            background: rgba(255, 255, 0, 0.2);
+            color: #ffff00;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .container {
+                margin: 1.5rem;
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 1rem;
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .menu-icon {
+                display: block;
+                align-self: flex-end;
+                margin-top: -2.5rem;
+            }
+            
+            .result-container {
+                flex-direction: column;
+            }
+            
+            .result-card {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section {
+                padding: 1rem;
+            }
+            
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-car"></i>
+            <span>FareFlow Admin</span>
+        </div>
+        <span class="menu-icon" onclick="toggleMenu()">☰</span>
+        <div class="nav-links" id="navLinks">
+            <a href="{{ url_for('view_entries') }}"><i class="fas fa-list"></i> View Entries</a>
+            <a href="{{ url_for('view_users') }}"><i class="fas fa-users"></i> View Users</a>
+            <a href="{{ url_for('logout') }}" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <!-- Live Stream Section -->
+        <div class="section">
+            <h2><i class="fas fa-video"></i> Live Camera Feed</h2>
+            <div class="video-container">
+                <img id="videoFeed" src="{{ url_for('video_feed') }}" alt="Live Feed">
+            </div>
+            <p class="status status-active"><i class="fas fa-circle"></i> Live feed active</p>
+        </div>
+
+        <!-- Capture Button -->
+        <div class="section" style="text-align: center;">
+            <button class="btn pulse" onclick="captureImage()">
+                <i class="fas fa-camera"></i> Capture Image
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="section">
+            <h2><i class="fas fa-search"></i> Detection Results</h2>
+            <div class="result-container">
+                <div class="result-card">
+                    <h3>Captured Image</h3>
+                    <img id="capturedImage" src="" alt="Captured Frame" style="max-height: 200px; display: none;">
+                    <p id="noImageText">No image captured yet</p>
+                </div>
+                
+                <div class="result-card">
+                    <h3>License Plate</h3>
+                    <p id="extractedText" class="status-waiting">Waiting for detection...</p>
+                </div>
+                
+                <div class="result-card">
+                    <h3>Timestamp</h3>
+                    <p id="timestampText" class="status-waiting">--:--:-- --</p>
+                </div>
+                
+                <div class="result-card">
+                    <h3>Calculated Fare</h3>
+                    <p id="fareText" class="status-waiting">0.00 units</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section">
+            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn" onclick="window.location.href='{{ url_for("view_entries") }}'">
+                    <i class="fas fa-list"></i> View All Entries
+                </button>
+                <button class="btn" onclick="window.location.href='{{ url_for("view_users") }}'">
+                    <i class="fas fa-users"></i> Manage Users
+                </button>
+                <button class="btn" onclick="window.location.href='{{ url_for("admin_dashboard") }}'">
+                    <i class="fas fa-sync"></i> Refresh Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle mobile menu
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('show');
+        }
+
+        // Capture image and process results
+        function captureImage() {
+            const btn = document.querySelector('.btn.pulse');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            btn.classList.remove('pulse');
+            
+            fetch('/capture', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showAlert(data.error, 'error');
+                    resetCaptureButton();
+                    return;
+                }
+                
+                // Update UI with results
+                const capturedImg = document.getElementById('capturedImage');
+                capturedImg.src = data.image;
+                capturedImg.style.display = 'block';
+                document.getElementById('noImageText').style.display = 'none';
+                
+                document.getElementById('extractedText').textContent = data.plate;
+                document.getElementById('extractedText').className = '';
+                
+                document.getElementById('timestampText').textContent = data.timestamp;
+                document.getElementById('timestampText').className = '';
+                
+                document.getElementById('fareText').textContent = `${data.fare.toFixed(2)} units`;
+                document.getElementById('fareText').className = '';
+                
+                // Show success message
+                showAlert('Image captured and processed successfully!', 'success');
+                resetCaptureButton();
+                
+                // Add animation to results
+                animateResults();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Failed to capture image', 'error');
+                resetCaptureButton();
+            });
+        }
+
+        function resetCaptureButton() {
+            const btn = document.querySelector('.btn');
+            btn.innerHTML = '<i class="fas fa-camera"></i> Capture Image';
+            btn.classList.add('pulse');
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.textContent = message;
+            alert.style.position = 'fixed';
+            alert.style.bottom = '20px';
+            alert.style.right = '20px';
+            alert.style.padding = '15px 25px';
+            alert.style.borderRadius = '8px';
+            alert.style.color = 'white';
+            alert.style.fontWeight = '600';
+            alert.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+            alert.style.zIndex = '1000';
+            alert.style.animation = 'fadeIn 0.3s ease-out';
+            
+            if (type === 'error') {
+                alert.style.background = 'linear-gradient(135deg, #ff5555, #ff0000)';
+            } else {
+                alert.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+            }
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.animation = 'fadeIn 0.3s ease-out reverse';
+                setTimeout(() => {
+                    alert.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        function animateResults() {
+            const results = document.querySelectorAll('.result-card');
+            results.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.transform = 'scale(1.05)';
+                    card.style.boxShadow = '0 10px 25px rgba(0,170,255,0.3)';
+                    
+                    setTimeout(() => {
+                        card.style.transform = '';
+                        card.style.boxShadow = '';
+                    }, 500);
+                }, index * 200);
+            });
+        }
+
+        // Update timestamp every second
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const dateString = now.toLocaleDateString();
+            document.getElementById('timestampText').textContent = `${timeString} • ${dateString}`;
+        }
+        
+        // Initial clock update
+        updateClock();
+        
+        // Update clock every second
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

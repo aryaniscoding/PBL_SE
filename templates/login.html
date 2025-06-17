@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | FareFlow</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #007bff;
+      --secondary: #00c6ff;
+      --dark: #343a40;
+      --light: #f8f9fa;
+      --danger: #dc3545;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: url("{{ url_for('static', filename='images/car_wallpaper.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      perspective: 1200px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: 2.5rem;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+      font-weight: bold;
+      position: relative;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .page-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      margin: 1rem auto 0;
+      border-radius: 2px;
+    }
+
+    .auth-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .auth-container:hover {
+      transform: rotateY(8deg) rotateX(5deg) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .auth-container h2 {
+      margin-bottom: 1.8rem;
+      color: #fff;
+      text-shadow: 0 0 8px rgba(0,0,0,0.6);
+      font-size: 1.8rem;
+      position: relative;
+    }
+
+    .auth-container h2::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      margin: 0.8rem auto 0;
+      border-radius: 2px;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.85);
+      outline: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+      background: rgba(255, 255, 255, 0.95);
+      transform: translateY(-2px);
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 1rem;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #0062cc, #0088cc);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: rotate(45deg);
+      transition: all 0.5s ease;
+    }
+
+    button:hover::after {
+      left: 100%;
+    }
+
+    .links {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .links a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .links a:hover {
+      color: #fff;
+    }
+
+    .links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: width 0.3s ease;
+    }
+
+    .links a:hover::after {
+      width: 100%;
+    }
+
+    .flash-message {
+      color: var(--danger);
+      background-color: rgba(255, 255, 255, 0.25);
+      padding: 0.8rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      border-left: 4px solid var(--danger);
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .nav-links {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      display: flex;
+      gap: 1.2rem;
+      z-index: 100;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.7rem 1.2rem;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.15);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links a i {
+      font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .auth-container {
+        padding: 1.8rem;
+      }
+      
+      .nav-links {
+        top: 1.5rem;
+        right: 1.5rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .page-title {
+        font-size: 1.8rem;
+      }
+      
+      .auth-container {
+        padding: 1.5rem;
+        max-width: 350px;
+      }
+      
+      .nav-links {
+        top: 1rem;
+        right: 1rem;
+        gap: 0.8rem;
+      }
+      
+      .nav-links a {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+      }
+      
+      input {
+        padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+      }
+      
+      .input-icon {
+        font-size: 1rem;
+        left: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-links">
+    <a href="{{ url_for('about_us') }}"><i class="fas fa-users"></i> About Us</a>
+    <a href="{{ url_for('about_website') }}"><i class="fas fa-info-circle"></i> About</a>
+  </div>
+
+  <div class="page-title">Welcome to FareFlow</div>
+
+  <div class="auth-container">
+    <h2>Login</h2>
+
+    <!-- Flash messages for error display -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash-message">
+            <i class="fas fa-exclamation-circle"></i> {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      <div class="input-group">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" name="username" placeholder="Username" required />
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-lock input-icon"></i>
+        <input type="password" name="password" placeholder="Password" required />
+      </div>
+      
+      <button type="submit">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </button>
+    </form>
+
+    <div class="links">
+      <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up now</a></p>
+      <p style="margin-top: 0.5rem;"><a href="#"><i class="fas fa-key"></i> Forgot password?</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Add ripple effect to button
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        const x = e.clientX - e.target.getBoundingClientRect().left;
+        const y = e.clientY - e.target.getBoundingClientRect().top;
+        
+        const ripple = document.createElement('span');
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        ripple.classList.add('ripple');
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 500);
+      });
+    });
+
+    // Add focus effects to inputs
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentElement.querySelector('.input-icon').style.color = '#007bff';
+      });
+      
+      input.addEventListener('blur', function() {
+        this.parentElement.querySelector('.input-icon').style.color = '#007bff';
+      });
+    });
+  </script>
+</body>
+</html>

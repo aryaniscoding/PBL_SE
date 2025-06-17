@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - FareFlow</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            padding: 30px 0 10px;
+            color: #333;
+        }
+        .team-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .member-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            margin: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .member-card:hover {
+            transform: translateY(-5px);
+        }
+        .member-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        .member-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .role {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .social-links a {
+            margin: 0 8px;
+            color: #444;
+            text-decoration: none;
+            font-size: 20px;
+        }
+        .social-links a:hover {
+            color: #0077b5; /* LinkedIn Blue */
+        }
+        .back-button {
+            display: block;
+            width: fit-content;
+            margin: 30px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <h1>Meet the FareFlow Team</h1>
+
+    <div class="team-container">
+        <!-- Team Member 1 -->
+        <div class="member-card">
+            <img src="{{ url_for('static', filename='images/image1.jpeg') }}" alt="Member 1" class="member-photo">
+            <div class="member-name">Aryan Sahu</div>
+            <div class="role">ML & Backend Developer</div>
+            <div class="social-links">
+                <a href="https://github.com/aryaniscoding" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/aryan-sahu-131928277" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="member-card">
+            <img src="{{ url_for('static', filename='images/image2.jpeg') }}" alt="Member 2" class="member-photo">
+            <div class="member-name">Rehan Maniyar</div>
+            <div class="role">Frontend and Research</div>
+            <div class="social-links">
+                <a href="https://github.com/rehan5723" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/rehan-maniyar" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="member-card">
+            <img src="{{ url_for('static', filename='images/image3.jpeg') }}" alt="Member 3" class="member-photo">
+            <div class="member-name">Preet Kotmire</div>
+            <div class="role">Research and Backend</div>
+            <div class="social-links">
+                <a href="https://github.com/PreetKot" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/preetk18" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+
+        <!-- Team Member 4 -->
+        <div class="member-card">
+            <img src="{{ url_for('static', filename='images/image4.jpeg') }}" alt="Member 4" class="member-photo">
+            <div class="member-name">Moksh Sonigara</div>
+            <div class="role">DBMS,ML and Hardware</div>
+            <div class="social-links">
+                <a href="https://github.com/alpha-2411" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/moksh-sonigara-03a87328b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+
+        <!-- Team Member 5 -->
+        <div class="member-card">
+            <img src="{{ url_for('static', filename='images/image5.jpeg') }}" alt="Member 5" class="member-photo">
+            <div class="member-name">Abhishek Dhende</div>
+            <div class="role">Researcher</div>
+            <div class="social-links">
+                <a href="https://github.com/kunaljoshi" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/kunaljoshi" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <a href="{{ url_for('login') }}" class="back-button">Back to Login</a>
+
+</body>
+</html>

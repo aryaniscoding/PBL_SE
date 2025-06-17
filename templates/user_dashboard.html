@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard - FareFlow</title>
+  <style>
+    :root {
+      --primary: #00aaff;
+      --primary-dark: #0077aa;
+      --bg-glass: rgba(255, 255, 255, 0.1);
+      --bg-dark: rgba(0, 0, 0, 0.7);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url("{{ url_for('static', filename='images/car_wallpaper.jpg') }}")
+        no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    nav {
+      width: 100%;
+      background: var(--bg-dark);
+      padding: 10px 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: flex-end;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: var(--primary);
+    }
+    .hero {
+      min-height: 100vh;
+      padding-top: 60px; /* Space for navbar */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .dashboard-container {
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 900px;
+      width: 90%;
+      margin: 20px auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      animation: fadeIn 1s ease-in-out;
+    }
+    .dashboard-container h1 {
+      margin-bottom: 20px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    .entries-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .entry {
+      background: var(--bg-dark);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s;
+    }
+    .entry:hover {
+      transform: translateY(-5px);
+    }
+    .entry img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .entry p {
+      margin: 5px 0;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @media (max-width: 600px) {
+      .dashboard-container h1 {
+        font-size: 2em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </nav>
+  <div class="hero">
+    <div class="dashboard-container">
+      <h1>Your Vehicle Details</h1>
+      <div id="results">
+        <!-- Fetched data will be displayed here -->
+        <p>Loading your entries...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function fetchData() {
+      fetch('/user/data')
+        .then((response) => response.json())
+        .then((data) => {
+          let html = '<h2>Your Entries</h2>';
+          if (data.length === 0) {
+            html += '<p>No entries found for your plate number.</p>';
+          } else {
+            html += '<div class="entries-container">';
+            data.forEach((entry) => {
+              html += `
+                <div class="entry">
+                  <img src="${entry.image}" alt="Captured Image">
+                  <p><strong>Timestamp:</strong> ${entry.timestamp}</p>
+                  <p><strong>Fare:</strong> ${parseFloat(entry.fare).toFixed(2)} units</p>
+                </div>
+              `;
+            });
+            html += '</div>';
+          }
+          document.getElementById('results').innerHTML = html;
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          document.getElementById('results').innerHTML =
+            '<p>Failed to fetch data.</p>';
+        });
+    }
+    window.onload = fetchData;
+  </script>
+</body>
+</html>
